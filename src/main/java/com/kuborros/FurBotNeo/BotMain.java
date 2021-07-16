@@ -25,10 +25,7 @@ import com.kuborros.FurBotNeo.commands.LewdCommands.*;
 import com.kuborros.FurBotNeo.commands.MusicCommands.*;
 import com.kuborros.FurBotNeo.commands.PicCommands.*;
 import com.kuborros.FurBotNeo.commands.ShopCommands.*;
-import com.kuborros.FurBotNeo.listeners.BotEventListener;
-import com.kuborros.FurBotNeo.listeners.LogListener;
-import com.kuborros.FurBotNeo.listeners.MemberEventListener;
-import com.kuborros.FurBotNeo.listeners.ShopTokenListener;
+import com.kuborros.FurBotNeo.listeners.*;
 import com.kuborros.FurBotNeo.utils.config.Database;
 import com.kuborros.FurBotNeo.utils.config.FurrySettingsManager;
 import com.kuborros.FurBotNeo.utils.config.JConfig;
@@ -205,7 +202,7 @@ public class BotMain {
                 JDABuilder builder = JDABuilder.createDefault(cfg.getBotToken());
                 builder.setStatus(OnlineStatus.ONLINE)
                         .enableIntents(GatewayIntent.GUILD_MEMBERS)
-                        .addEventListeners(waiter, client.build(), new LogListener(), new MemberEventListener(), new BotEventListener())
+                        .addEventListeners(waiter, client.build(), new LogListener(), new MemberEventListener(), new BotEventListener(), new TwitterListener())
                         .setAutoReconnect(true)
                         .setChunkingFilter(ChunkingFilter.ALL)
                         .setEnableShutdownHook(true);

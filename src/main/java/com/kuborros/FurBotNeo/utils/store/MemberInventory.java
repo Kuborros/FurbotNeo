@@ -28,7 +28,8 @@ public class MemberInventory {
     final String uId;
     final ArrayList<String> ownedRoles;
     int balance;
-    boolean VIP, banned;
+    final boolean VIP;
+    boolean banned;
     String currentRole;
 
     //Initialises empty inventory
@@ -111,10 +112,6 @@ public class MemberInventory {
 
     public int getBalance() {
         return balance;
-    }
-
-    public int getLevel(){
-        return 100;
     }
 
     public boolean isBanned() {

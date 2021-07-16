@@ -16,6 +16,7 @@
 
 package com.kuborros.FurBotNeo.utils.config;
 
+import com.kuborros.FurBotNeo.net.TwitterFollow;
 import com.kuborros.FurBotNeo.utils.store.MemberInventory;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -30,8 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
-
-import static com.kuborros.FurBotNeo.BotMain.cfg;
 
 public class Database {
 
@@ -124,6 +123,20 @@ public class Database {
                     "(user_id TEXT UNIQUE PRIMARY KEY NOT NULL) ";
 
             stat.executeUpdate(count);
+
+            String tweet = "CREATE TABLE IF NOT EXISTS TwitterWatch " +
+
+                    "(id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT, " +
+
+                    " t_handle TEXT NOT NULL, " +
+
+                    " guild_id TEXT NOT NULL, " +
+
+                    " channel_id TEXT NOT NULL, " +
+
+                    " last_id INTEGER DEFAULT 0) ";
+
+            stat.executeUpdate(tweet);
 
         } catch (SQLException e) {
             LOG.error("Failure while creating database tables: ", e);
@@ -408,7 +421,7 @@ public class Database {
                     "WHERE member_id= ? AND guild_id= ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, inventory.getBalance());
-            pstmt.setInt(2, inventory.getLevel());
+            pstmt.setInt(2, 100);
             pstmt.setString(3, roles);
             pstmt.setString(4, inventory.getCurrentRole());
             pstmt.setBoolean(5, inventory.isBanned());
@@ -432,29 +445,28 @@ public class Database {
         }
     }
 
-    @Deprecated
-    public void addBannedUser(String memberId, String guildId) throws SQLException {
-        if (getBanStatus(memberId, guildId)) return;
-        stat = conn.createStatement();
-        stat.executeUpdate("INSERT INTO BotBans (user_id, guild_id) VALUES (" + memberId + "," + guildId + ")");
+    public LinkedList <TwitterFollow> getTwitterSubs() {
+        LinkedList<TwitterFollow> follows = new LinkedList<>();
+        try {
+            stat = conn.createStatement();
+            ResultSet rs = stat.executeQuery("SELECT * FROM TwitterWatch");
+            while (rs.next()) {
+                follows.add(new TwitterFollow(rs.getString(2),rs.getString(3),rs.getString(4),rs.getLong(5)));
+            }
+        } catch (Exception e) {
+            LOG.error("",e);
+        }
+        return follows;
     }
 
-    @Deprecated
-    public boolean getBanStatus(String memberId, String guildId) throws SQLException {
-        if (memberId.equals(cfg.getOwnerId())) {
-            return false;
+    public void setLastTweet(String handle, String channel, Long id) {
+        try {
+            stat = conn.createStatement();
+            stat.executeUpdate("UPDATE TwitterWatch SET last_id= '" + id + "' WHERE t_handle= '" + handle + "' AND channel_id= '" + channel + "'");
+        } catch (Exception e) {
+            LOG.error("",e);
         }
-        stat = conn.createStatement();
-        ResultSet resultSet = stat.executeQuery("SELECT user_id FROM BotBans WHERE user_id =" + memberId + " AND guild_id =" + guildId);
-        while (resultSet.next()) {
-            if (resultSet.getString("user_id").contains(memberId)) return true;
-        }
-        return false;
-    }
 
-    @Deprecated
-    public void unbanUser(String memberId, String guildId) throws SQLException {
-        stat = conn.createStatement();
-        stat.executeUpdate("DELETE FROM BotBans WHERE user_id =" + memberId + " AND guild_id =" + guildId);
+
     }
 }
