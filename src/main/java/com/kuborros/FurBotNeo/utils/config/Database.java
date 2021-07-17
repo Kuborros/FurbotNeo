@@ -466,7 +466,27 @@ public class Database {
         } catch (Exception e) {
             LOG.error("",e);
         }
+    }
 
+    private boolean addTwitterFollow(String handle, String channelId, String guildID) {
+        try {
+            stat = conn.createStatement();
+            stat.executeUpdate("INSERT INTO TwitterFollow (t_handle, channel_id, guild_id) VALUES (" + handle + "," + channelId + "," + guildID + ")");
+            return true;
+        } catch (SQLException e) {
+            LOG.debug("Follow likely already exists: ", e);
+            return false;
+        }
+    }
 
+    private boolean removeTwitterFollow(String handle, String channelId, String guildID) {
+        try {
+            stat = conn.createStatement();
+            stat.executeUpdate("DELETE FROM TwitterFollow WHERE t_handle=" + handle + " AND channel_id=" + channelId);
+            return true;
+        } catch (SQLException e) {
+            LOG.debug("Failed to remove follow: ", e);
+            return false;
+        }
     }
 }
