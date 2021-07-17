@@ -149,6 +149,7 @@ public class BotMain {
                 new GuildConfigCommand(),
                 new ReloadItemsCommand(),
                 new ShutdownCommand(),
+                new TweetFollowCmd(),
 
                 //Lewd
                 //All NSFW commands go here, along with all questionable ones.

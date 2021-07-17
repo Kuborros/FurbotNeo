@@ -62,6 +62,16 @@ abstract class AdminCommand extends Command {
         return builder.build();
     }
 
+    protected MessageEmbed sendGenericEmbed(String title, String msg, String emote) {
+        EmbedBuilder eb = new EmbedBuilder()
+                .setColor(Color.CYAN)
+                .setTitle(emote + "  " + title);
+        if (!msg.isBlank()) {
+            eb.addField("", msg, true);
+        }
+        return eb.build();
+    }
+
 
     //Being service commands meant for admins, these do not award tokens for use.
     @Override

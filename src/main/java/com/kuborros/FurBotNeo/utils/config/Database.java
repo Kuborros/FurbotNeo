@@ -468,10 +468,10 @@ public class Database {
         }
     }
 
-    private boolean addTwitterFollow(String handle, String channelId, String guildID) {
+    public boolean addTwitterFollow(String handle, String channelId, String guildId, long id) {
         try {
             stat = conn.createStatement();
-            stat.executeUpdate("INSERT INTO TwitterFollow (t_handle, channel_id, guild_id) VALUES (" + handle + "," + channelId + "," + guildID + ")");
+            stat.executeUpdate("INSERT INTO TwitterWatch (t_handle, channel_id, guild_id, last_id) VALUES ('" + handle + "','" + channelId + "','" + guildId + "'," + id + ")");
             return true;
         } catch (SQLException e) {
             LOG.debug("Follow likely already exists: ", e);
@@ -479,7 +479,7 @@ public class Database {
         }
     }
 
-    private boolean removeTwitterFollow(String handle, String channelId, String guildID) {
+    public boolean removeTwitterFollow(String handle, String channelId, String guildID) {
         try {
             stat = conn.createStatement();
             stat.executeUpdate("DELETE FROM TwitterFollow WHERE t_handle=" + handle + " AND channel_id=" + channelId);
