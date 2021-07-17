@@ -479,10 +479,10 @@ public class Database {
         }
     }
 
-    public boolean removeTwitterFollow(String handle, String channelId, String guildID) {
+    public boolean removeTwitterFollow(String handle, String channelId) {
         try {
             stat = conn.createStatement();
-            stat.executeUpdate("DELETE FROM TwitterFollow WHERE t_handle=" + handle + " AND channel_id=" + channelId);
+            stat.executeUpdate("DELETE FROM TwitterWatch WHERE t_handle=" + handle + " AND channel_id=" + channelId);
             return true;
         } catch (SQLException e) {
             LOG.debug("Failed to remove follow: ", e);

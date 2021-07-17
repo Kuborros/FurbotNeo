@@ -150,6 +150,7 @@ public class BotMain {
                 new ReloadItemsCommand(),
                 new ShutdownCommand(),
                 new TweetFollowCmd(),
+                new TweetUnFollowCmd(),
 
                 //Lewd
                 //All NSFW commands go here, along with all questionable ones.
