@@ -33,12 +33,12 @@ public class TwitterListener extends ListenerAdapter {
                     Twitter twitter = TwitterFactory.getSingleton();
                     follows.forEach(twitterFollow -> {
                         Query query = new Query("from:" + twitterFollow.getHandle() + " -filter:replies -filter:retweets").count(10).sinceId(twitterFollow.getLastId());
-                        LOG.debug("Twitter lookup for " + twitterFollow.getHandle());
+                        LOG.info("Twitter lookup for " + twitterFollow.getHandle());
                         Long id = twitterFollow.getLastId();
                         TextChannel channel = Objects.requireNonNull(event.getJDA().getGuildById(twitterFollow.getGuildId())).getTextChannelById(twitterFollow.getChannelId());
                         try {
                             QueryResult result = twitter.search(query);
-                            LOG.debug("Found " + result.getTweets().size() + " results.");
+                            LOG.info("Found " + result.getTweets().size() + " results.");
                             for (Status status : result.getTweets()) {
                                 if (id < status.getId()) id = status.getId();
                                 String url = "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
