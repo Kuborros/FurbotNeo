@@ -50,7 +50,7 @@ import static com.kuborros.FurBotNeo.BotMain.db;
                     return;
                 }
                 Status status = result.getTweets().get(0);
-                id = status.getId()-1;
+                id = status.getId();
                 if (db.addTwitterFollow(handle,channelId,guild,id)) {
                     event.reply(sendGenericEmbed("Account followed successfully!","We are now following " + handle + " in " + channel.getName(),"✅"));
                     event.reply("https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId());
