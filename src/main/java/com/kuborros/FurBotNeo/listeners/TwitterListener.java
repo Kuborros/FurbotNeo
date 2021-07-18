@@ -38,7 +38,7 @@ public class TwitterListener extends ListenerAdapter {
                         TextChannel channel = Objects.requireNonNull(event.getJDA().getGuildById(twitterFollow.getGuildId())).getTextChannelById(twitterFollow.getChannelId());
                         try {
                             QueryResult result = twitter.search(query);
-                            LOG.info("Got " + result.getTweets().size() + "results");
+                            LOG.info("Found " + result.getTweets().size() + " results.");
                             for (Status status : result.getTweets()) {
                                 if (id < status.getId()) id = status.getId();
                                 String url = "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
