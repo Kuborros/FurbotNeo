@@ -7,8 +7,10 @@
     "shard": false,
     "shop": true,
     "buy_vip": false,
-    "audio_all_can_skip": false
+    "audio_all_can_skip": false,
+    "tweet_enabled": false
   },
   "audio_skip_percent": 75,
+  "tweet_count": 50,
   "blacklist_servers": []
 }

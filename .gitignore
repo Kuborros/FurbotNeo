@@ -3,6 +3,7 @@ database.*
 target/
 config.*
 items.json
+twitter4j.properties
 FurBotNeo.iml
 dependency-reduced-pom.xml
 logs/

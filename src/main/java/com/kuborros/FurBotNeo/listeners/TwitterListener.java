@@ -10,11 +10,9 @@ import twitter4j.*;
 
 import javax.annotation.Nonnull;
 
-import java.util.LinkedList;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
+import static com.kuborros.FurBotNeo.BotMain.cfg;
 import static com.kuborros.FurBotNeo.BotMain.db;
 
 public class TwitterListener extends ListenerAdapter {
@@ -23,7 +21,9 @@ public class TwitterListener extends ListenerAdapter {
 
         @Override
         public void onReady(@Nonnull ReadyEvent event) {
-
+            //Twitter stuff
+            if (!cfg.isTwitterEnabled()) return;
+            int count = cfg.getTweetCount();
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
@@ -32,18 +32,22 @@ public class TwitterListener extends ListenerAdapter {
                     if (follows.isEmpty()) return;
                     Twitter twitter = TwitterFactory.getSingleton();
                     follows.forEach(twitterFollow -> {
-                        Query query = new Query("from:" + twitterFollow.getHandle() + " -filter:replies -filter:retweets").count(10).sinceId(twitterFollow.getLastId()).resultType(Query.ResultType.recent);
                         LOG.info("Twitter lookup for " + twitterFollow.getHandle());
                         Long id = twitterFollow.getLastId();
                         TextChannel channel = Objects.requireNonNull(event.getJDA().getGuildById(twitterFollow.getGuildId())).getTextChannelById(twitterFollow.getChannelId());
                         try {
-                            QueryResult result = twitter.search(query);
-                            LOG.info("Found " + result.getTweets().size() + " results.");
-                            for (Status status : result.getTweets()) {
+                            List<Status> statuses = twitter.getUserTimeline(twitterFollow.getHandle(),new Paging().count(count));
+                            LOG.info("Found " + statuses.size() + " results.");
+                            Collections.reverse(statuses);
+                            for (Status status : statuses) {
                                 if (id < status.getId()) id = status.getId();
-                                String url = "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
-                                Objects.requireNonNull(channel).sendMessage(url).complete();
-                                LOG.info("@" + status.getUser().getScreenName() + ":" + status.getText() + " id=" + status.getId());
+                                if (id < status.getId() || status.isRetweet() || status.getInReplyToScreenName() != null) {
+                                    LOG.debug("Skipping: @" + status.getUser().getScreenName() + ":" + status.getText() + " id=" + status.getId());
+                                } else {
+                                    String url = "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
+                                    Objects.requireNonNull(channel).sendMessage(url).complete();
+                                    LOG.info("@" + status.getUser().getScreenName() + ":" + status.getText() + " id=" + status.getId());
+                                }
                             }
                             db.setLastTweet(twitterFollow.getHandle(),twitterFollow.getChannelId(),id);
                         } catch (Exception e) {
@@ -52,5 +56,6 @@ public class TwitterListener extends ListenerAdapter {
                     });
                 }
             }, 1000, 3600000);
+            //End of Twitter code
     }
 }

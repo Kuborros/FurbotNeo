@@ -31,12 +31,12 @@ import java.util.Optional;
 
 public class JConfig {
 
-    private static final int confVersion = 3;
+    private static final int confVersion = 4;
     private static final Logger LOG = LoggerFactory.getLogger(JConfig.class);
     private static final File CONFILE = new File("config.json");
     private String botToken, ownerId;
-    private int skipPercent;
-    private boolean debugMode, invidioEnabled, shardingEnabled, shopEnabled, buyVipEnabled, legacySkipAudio;
+    private int skipPercent,tweetCount;
+    private boolean debugMode, invidioEnabled, shardingEnabled, shopEnabled, buyVipEnabled, legacySkipAudio,twitterEnabled;
     private JSONArray bannedGuilds = new JSONArray();
 
     public JConfig() {
@@ -85,13 +85,19 @@ public class JConfig {
                 buyVipEnabled = bools.get().optBoolean("buy_vip");
                 //Version 3 booleans:
                 legacySkipAudio = bools.get().optBoolean("audio_all_can_skip");
+                //Version 4 booleans:
+                twitterEnabled = bools.get().optBoolean("tweet_enabled");
 
             }
-            //Vesion 3 ints:
+            //Version 3 ints:
             skipPercent = config.optInt("audio_skip_percent");
+
+            //Version 4 ints:
+            tweetCount = config.optInt("tweet_count");
 
             //Default int values
             if (skipPercent == 0) skipPercent = 75;
+            if (tweetCount == 0) tweetCount = 50;
 
             //Version 1 arrays:
             Optional<JSONArray> banned = Optional.ofNullable(config.optJSONArray("blacklist_servers"));
@@ -142,6 +148,14 @@ public class JConfig {
 
     public JSONArray getBannedGuilds() {
         return bannedGuilds;
+    }
+
+    public int getTweetCount() {
+        return tweetCount;
+    }
+
+    public boolean isTwitterEnabled() {
+        return twitterEnabled;
     }
 
     @Nullable

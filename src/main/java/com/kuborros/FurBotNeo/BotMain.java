@@ -149,8 +149,6 @@ public class BotMain {
                 new GuildConfigCommand(),
                 new ReloadItemsCommand(),
                 new ShutdownCommand(),
-                new TweetFollowCmd(),
-                new TweetUnFollowCmd(),
 
                 //Lewd
                 //All NSFW commands go here, along with all questionable ones.
@@ -180,6 +178,13 @@ public class BotMain {
             }
         }
 
+        //Twitter - not load them if not used in the instance.
+        if (cfg.isTwitterEnabled()) {
+            client.addCommands(
+                    new TweetFollowCmd(),
+                    new TweetUnFollowCmd()
+            );
+        }
 
         try {
 
