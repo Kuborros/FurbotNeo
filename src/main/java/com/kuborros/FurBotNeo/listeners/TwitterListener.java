@@ -36,7 +36,7 @@ public class TwitterListener extends ListenerAdapter {
                         Long id = twitterFollow.getLastId();
                         TextChannel channel = Objects.requireNonNull(event.getJDA().getGuildById(twitterFollow.getGuildId())).getTextChannelById(twitterFollow.getChannelId());
                         try {
-                            List<Status> statuses = twitter.getUserTimeline(twitterFollow.getHandle(),new Paging().count(count));
+                            List<Status> statuses = twitter.getUserTimeline(twitterFollow.getHandle(),new Paging().count(count).sinceId(twitterFollow.getLastId()));
                             LOG.info("Found " + statuses.size() + " results.");
                             Collections.reverse(statuses);
                             for (Status status : statuses) {
